@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>NavTalk Avatar + OpenAI TTS (Realtime Lip Sync)</title>
+    <title>NavTalk Avatar + AI Conversation</title>
 
-    <!-- If some environment injects a strict CSP, this helps. -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self' https: wss: http://localhost:5179;
@@ -28,8 +27,8 @@
             <span class="pill" id="modePill">transparency mode</span>
           </div>
           <div class="navLinks">
-            <a class="navLink active" href="/index.html">TTS</a>
-            <a class="navLink" href="/chat.html">AI Chat</a>
+            <a class="navLink" href="/index.html">TTS</a>
+            <a class="navLink active" href="/chat.html">AI Chat</a>
           </div>
           <div class="status">
             <span class="dot" id="wsDot"></span>
@@ -44,29 +43,19 @@
 
       <div class="card">
         <div class="cardHeader">
-          <div class="title">Controls</div>
+          <div class="title">Conversation</div>
           <div class="pill mono" id="webrtcPill">webrtc: idle</div>
         </div>
 
-        <div class="content col" style="gap: 12px">
+        <div class="content col" style="gap: 12px;">
           <div class="row">
             <div class="col" style="flex: 1; min-width: 240px">
-              <label
-                >NavTalk API Key (demo only — don’t ship this in client)</label
-              >
-              <input
-                id="navtalkKey"
-                placeholder="NAVTALK_API_KEY"
-                value="sk_navtalk_YPkJsq74zfy5ipuWFk4x4cY9vm4HpqFT"
-              />
+              <label>NavTalk API Key (demo only — don’t ship this in client)</label>
+              <input id="navtalkKey"  value="sk_navtalk_YPkJsq74zfy5ipuWFk4x4cY9vm4HpqFT" placeholder="NAVTALK_API_KEY" />
             </div>
             <div class="col" style="flex: 1; min-width: 240px">
               <label>Character name</label>
-              <input
-                id="characterName"
-                placeholder="navtalk.Leo"
-                value="navtalk.Lauren"
-              />
+              <input id="characterName" placeholder="navtalk.Lauren" value="navtalk.Lauren" />
             </div>
           </div>
 
@@ -84,30 +73,41 @@
             </div>
             <div class="col" style="flex: 2; min-width: 260px">
               <label>Optional TTS instructions (tone / style)</label>
-              <input
-                id="ttsInstructions"
-                placeholder="e.g., Speak clearly, friendly tone."
-              />
+              <input id="ttsInstructions" placeholder="e.g., Speak clearly, friendly tone." />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col" style="flex: 1; min-width: 220px">
+              <label>Chat model (server)</label>
+              <select id="chatModel">
+                <option value="gpt-4o-mini" selected>gpt-4o-mini</option>
+                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+              </select>
+            </div>
+            <div class="col" style="flex: 1; min-width: 220px">
+              <label>Auto speak assistant</label>
+              <div class="toggleRow">
+                <input type="checkbox" id="autoSpeak" checked />
+                <span class="mutedSmall">Send the AI reply to the avatar automatically.</span>
+              </div>
             </div>
           </div>
 
           <div class="btnRow">
             <button class="primary" id="connectBtn">Connect Avatar</button>
-            <button class="danger" id="disconnectBtn" disabled>
-              Disconnect
-            </button>
+            <button class="danger" id="disconnectBtn" disabled>Disconnect</button>
             <button id="stopBtn" disabled>Stop Speaking</button>
-            <!-- <button class="primary" id="startMicBtn" disabled>Start Mic</button>
-            <button id="stopMicBtn" disabled>Stop Mic</button> -->
+            <button id="clearChatBtn">Clear Chat</button>
           </div>
 
-          <div class="col">
-            <label>Text to speak (Enter to send, Shift+Enter new line)</label>
-            <textarea id="text"></textarea>
-            <div class="btnRow">
-              <button class="primary" id="sendBtn" disabled>
-                Send to Speak
-              </button>
+          <div class="chatWrap">
+            <div class="chatLog" id="chatLog"></div>
+            <div class="chatComposer">
+              <textarea id="chatInput" placeholder="Type a message... (Enter to send, Shift+Enter new line)"></textarea>
+              <div class="btnRow">
+                <button class="primary" id="sendChatBtn" disabled>Send</button>
+              </div>
             </div>
           </div>
 
@@ -119,6 +119,6 @@
       </div>
     </div>
 
-    <script type="module" src="/ttsPage.js"></script>
+    <script type="module" src="/chatPage.js"></script>
   </body>
 </html>

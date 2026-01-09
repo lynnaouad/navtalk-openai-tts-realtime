@@ -7,13 +7,16 @@
   --good: #34d399;
   --bad: #fb7185;
 }
+
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
@@ -24,22 +27,31 @@ body {
     var(--bg) 55%
   );
   color: var(--text);
-  overflow: hidden;
+  overflow: hidden; /* page stays fixed; right panel scrolls internally */
 }
+
 .app {
   height: 100%;
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 14px;
   padding: 14px;
+  min-height: 0; /* important for nested flex/grid scrolling */
 }
+
+/* Cards must be flex columns so content can size/scroll correctly */
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* critical */
 }
+
 .cardHeader {
   padding: 12px 14px;
   display: flex;
@@ -51,7 +63,38 @@ body {
     rgba(255, 255, 255, 0.02)
   );
   border-bottom: 1px solid var(--border);
+
+  flex: 0 0 auto;
 }
+
+.navLinks {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navLink {
+  font-size: 12px;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+}
+
+.navLink.active {
+  color: var(--text);
+  border-color: rgba(52, 211, 153, 0.35);
+  background: rgba(52, 211, 153, 0.12);
+}
+
 .title {
   font-weight: 700;
   letter-spacing: 0.2px;
@@ -59,6 +102,7 @@ body {
   gap: 10px;
   align-items: center;
 }
+
 .pill {
   font-size: 12px;
   padding: 4px 10px;
@@ -67,42 +111,66 @@ body {
   background: rgba(255, 255, 255, 0.06);
   color: var(--muted);
 }
+
+/* VIDEO AREA (left card) */
 .videoWrap {
-  height: calc(100vh - 28px - 58px);
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: rgba(0, 0, 0, 0.35);
+
+  /* keep your “nice” max size but don’t break layout */
+  max-width: 1080px;
+  max-height: 1080px;
+  margin: 0 auto;
 }
+
 video {
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: rgba(0, 0, 0, 0.35);
 }
-.videoWrap {
-  max-width: 1080px;
-  max-height: 1080px;
-  margin: 0 auto;
-}
+
+/* ================================
+   RIGHT PANEL LAYOUT (FIXED)
+   - Right side scrollable
+   - Chat gets most of the height
+   ================================ */
 .content {
   padding: 14px;
+  flex: 1 1 auto;
+  min-height: 0; /* critical */
+
+  display: flex; /* <-- key change */
+  flex-direction: column;
+  gap: 12px;
+
+  overflow-y: auto; /* <-- right side scrollable */
+  overflow-x: hidden;
 }
+
 .row {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
+
 .col {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 label {
   font-size: 12px;
   color: var(--muted);
 }
+
 input,
 select,
 textarea {
@@ -114,19 +182,23 @@ textarea {
   color: var(--text);
   outline: none;
 }
+
 textarea {
   min-height: 120px;
   resize: vertical;
 }
+
 option {
   background: #1a1f2b;
   color: #e9eefc;
 }
+
 .btnRow {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
+
 button {
   cursor: pointer;
   border: 1px solid var(--border);
@@ -136,21 +208,26 @@ button {
   color: var(--text);
   font-weight: 600;
 }
+
 button:hover {
   background: rgba(255, 255, 255, 0.12);
 }
+
 button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
 .primary {
   background: rgba(52, 211, 153, 0.18);
   border-color: rgba(52, 211, 153, 0.35);
 }
+
 .danger {
   background: rgba(251, 113, 133, 0.15);
   border-color: rgba(251, 113, 133, 0.35);
 }
+
 .status {
   font-size: 12px;
   color: var(--muted);
@@ -159,6 +236,7 @@ button:disabled {
   flex-wrap: wrap;
   align-items: center;
 }
+
 .dot {
   width: 10px;
   height: 10px;
@@ -166,25 +244,129 @@ button:disabled {
   background: var(--bad);
   box-shadow: 0 0 0 4px rgba(251, 113, 133, 0.1);
 }
+
 .dot.ok {
   background: var(--good);
   box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.12);
 }
+
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", monospace;
 }
+
+/* Log: keep it compact so chat stays big */
 .log {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px;
-  height: 260px;
+  max-height: 180px; /* was 260px, smaller for better UX */
   overflow: auto;
   white-space: pre-wrap;
   font-size: 12px;
   color: rgba(233, 238, 252, 0.85);
 }
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-items: start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.toggleRow input {
+  width: 40px;
+}
+
+.mutedSmall {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* CHAT (Make it the main expandable block) */
+.chatWrap {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1 1 auto; /* <-- key change: chat takes remaining height */
+  min-height: 400px;
+}
+
+.chatLog {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto; /* <-- key change: remove any cap */
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chatComposer {
+  flex: 0 0 auto;
+  border-top: 1px solid var(--border);
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.12);
+}
+.chatComposer textarea {
+  min-height: 120px;
+}
+
+.msg {
+  display: flex;
+}
+
+.msg.user {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: 92%;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.msg.user .bubble {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.22);
+}
+
+.msg.assistant .bubble {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.msg.system .bubble {
+  background: rgba(251, 113, 133, 0.08);
+  border-color: rgba(251, 113, 133, 0.18);
+}
+
+.bubble .role {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bubble .text {
+  font-size: 13px;
+  color: rgba(233, 238, 252, 0.95);
+  line-height: 1.35;
+}
+
+/* Mobile */
 @media (max-width: 980px) {
   body {
     overflow: auto;
@@ -193,6 +375,30 @@ button:disabled {
     grid-template-columns: 1fr;
   }
   .videoWrap {
+    max-width: none;
+    max-height: none;
     height: 52vh;
+    flex: 0 0 auto;
   }
+}
+
+/* ===== Custom scrollbar (WebKit / Chromium) ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.25); /* spacing illusion */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
