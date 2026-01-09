@@ -118,6 +118,10 @@ textarea {
   min-height: 120px;
   resize: vertical;
 }
+option {
+  background: #1a1f2b;
+  color: #e9eefc;
+}
 .btnRow {
   display: flex;
   gap: 10px;
